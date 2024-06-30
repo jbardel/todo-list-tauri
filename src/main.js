@@ -1,26 +1,29 @@
 const { invoke } = window.__TAURI__.tauri;
 
-let greetInputEl;
-let greetMsgEl;
-
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document.querySelector("#greet-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    greet();
-  });
-});
-
-
 const addForm = document.querySelector(".add");
 const list = document.querySelector(".todos");
 const search = document.querySelector(".search input");
+
+//RUST FUNCTIONS
+
+async function addTask(name) {
+  await invoke("add_task", { name: name });
+}
+
+async function getTasks(){
+  await invoke("get_tasks", {}).then(res => {
+    console.log("Res", res);
+  });
+}
+
+
+//
+
+
+window.addEventListener("load", (event) => {
+  getTasks();
+});
+
 
 // add new todos
 const generateTemplate = (todo) => {
@@ -33,14 +36,13 @@ const generateTemplate = (todo) => {
   list.innerHTML += html;
 };
 
+
 // clear todo text box input and prevent inputs with unecessary white space
 addForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const todo = addForm.add.value.trim();
-  if (todo.length) {
-    generateTemplate(todo);
-    addForm.reset();
-  }
+  addTask(todo);
+  addForm.reset();
 });
 
 // delete todos
