@@ -10,19 +10,23 @@ async function addTask(name) {
   await invoke("add_task", { name: name });
 }
 
-async function getTasks(){
+async function getTasks() {
   await invoke("get_tasks", {}).then(res => {
     console.log("Res", res);
   });
 }
 
-
 //
-
 
 window.addEventListener("load", (event) => {
   getTasks();
 });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   // This will wait for the window to load, but you could
+//   // run this function on whatever trigger you want
+//   invoke('close_splashscreen')
+// })
 
 
 // add new todos
